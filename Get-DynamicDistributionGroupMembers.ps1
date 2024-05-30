@@ -88,4 +88,6 @@ if ($result -eq [System.Windows.Forms.DialogResult]::OK) {
 }
 
 # Disconnect from Exchange Online without asking for confirmation.
-Disconnect-ExchangeOnline -Confirm:$false 
+Disconnect-ExchangeOnline -Confirm:$false
+
+Pause
