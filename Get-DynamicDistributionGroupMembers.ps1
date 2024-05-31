@@ -68,7 +68,8 @@ if ($result -eq [System.Windows.Forms.DialogResult]::OK) {
     $csvExport = $csvExportBox.Checked
 
     # Get the Dynamic Distribution Group and its members.
-    $recipients = Get-Recipient -RecipientPreviewFilter (Get-DynamicDistributionGroup -Identity $name).RecipientFilter | Select-Object DisplayName, Title, Department
+    $recipients = Get-DynamicDistributionGroupMember -Identity $name | Select-Object DisplayName, Title, Department
+    #$recipients = Get-Recipient -RecipientPreviewFilter (Get-DynamicDistributionGroup -Identity $name).RecipientFilter | Select-Object DisplayName, Title, Department
     if ($useGridView) {
         $recipients | Out-GridView
     } else {
@@ -88,6 +89,4 @@ if ($result -eq [System.Windows.Forms.DialogResult]::OK) {
 }
 
 # Disconnect from Exchange Online without asking for confirmation.
-Disconnect-ExchangeOnline -Confirm:$false
-
-Pause
+Disconnect-ExchangeOnline -Confirm:$false 
