@@ -143,11 +143,21 @@ if (![Diagnostics.EventLog]::SourceExists($source)) {
     [Diagnostics.EventLog]::CreateEventSource($source, $logName)
 }
 
-# Iterate over each shortcut
+# Iterate over each shortcut in the shortcuts array
 foreach ($shortcut in $shortcuts) {
-    # Define the message for the event log
-    $message = "Shortcut $($shortcut.Name).lnk created successfully"
-
-    # Write the entry to the event log
-    Write-EventLog -LogName $logName -Source $source -EventId $eventID -EntryType $entryType -Message $message
+    # Check if the shortcut file exists in the location
+    if (Test-Path "$($location.Path)\$($shortcut.Name).lnk") {
+        # If it exists, prepare a success message
+        $message = "Shortcut $($shortcut.Name).lnk created successfully"
+        # Write the success message to the event log
+        Write-EventLog -LogName $logName -Source $source -EventId $eventID -EntryType $entryType -Message $message
+    }
+    else {
+        # If the shortcut file doesn't exist, prepare a failure message
+        $message = "Failed to create shortcut $($shortcut.Name).lnk"
+        # Change the entry type to Error
+        $entryType = "Error"
+        # Write the failure message to the event log
+        Write-EventLog -LogName $logName -Source $source -EventId $eventID -EntryType $entryType -Message $message
+    }
 }

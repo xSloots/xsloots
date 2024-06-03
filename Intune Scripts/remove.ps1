@@ -71,7 +71,16 @@ if (![Diagnostics.EventLog]::SourceExists($source)) {
 # Iterate over each shortcut
 foreach ($shortcut in $shortcuts) {
     # Define the message for the event log
-    $message = "Shortcut $($shortcut.Name).lnk successfully Removed"
+    $desktopShortcutFile = "$Desktop\$($shortcut.Name).lnk"
+    $userStartMenuShortcutFile = "$AppData\$($shortcut.Name).lnk"
+    $systemStartMenuShortcutFile = "$ProgramDataStartMenu\$($shortcut.Name).lnk"
+    if ((Test-Path $desktopShortcutFile) -or (Test-Path $userStartMenuShortcutFile) -or (Test-Path $systemStartMenuShortcutFile)) {
+        $message = "Failed to remove Shortcut $($shortcut.Name).lnk"
+        $entryType = "Error"
+    } else {
+        $message = "Shortcut $($shortcut.Name).lnk successfully Removed"
+        $entryType = "Information"
+    }
 
     # Write the entry to the event log
     Write-EventLog -LogName $logName -Source $source -EventId $eventID -EntryType $entryType -Message $message
